@@ -1,3 +1,9 @@
+---
+layout: page
+title: R workshop - A crash course in R for D7:3
+time: 3 hours
+---
+
 # R workshop
 
 D7:3 retreat, Noors slott, 2018-08-30
@@ -29,18 +35,22 @@ For your convenience, the required files are available on a USB stick during the
 
 ### Install R
 
-To download R, go to CRAN, https://cloud.r-project.org/ (the comprehensive R archive network). Choose your system and select the latest version to install.
+To download R, go to [CRAN](https://cloud.r-project.org/) (the comprehensive R archive network). Choose your system and select the latest version to install.
 
 ### Install RStudio
 
-You also can use a hefty tool to write and compile R codes. And RStudio is the most robust and popular IDE (integrated development environment) for R programming. It is available on http://www.rstudio.com/download. (open source and for free)
+You also can use a hefty tool to write and compile R codes. And RStudio is the most robust and popular IDE (integrated development environment) for R programming. [Download from RStudio](http://www.rstudio.com/download) (open source and for free).
 
 ## First steps
+
+
 
 #### Markdown
 
 - Bulleted
 - List
+
+Another list 
 
 1. Numbered
 2. List

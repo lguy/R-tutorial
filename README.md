@@ -1,19 +1,11 @@
-## Welcome to GitHub Pages
+## R Tutorial for D7:3
 
-You can use the [editor on GitHub](https://github.com/lguy/R-tutorial/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+To get you used to R
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Program
 
-### Markdown
+#### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
 
 - Bulleted
 - List

@@ -1,9 +1,3 @@
----
-layout: page
-title: R workshop - A crash course in R for D7:3
-time: 3 hours
----
-
 # R workshop
 
 D7:3 retreat, Noors slott, 2018-08-30

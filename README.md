@@ -37,21 +37,99 @@ You also can use a hefty tool to write and compile R codes. And RStudio is the m
 
 ## First RStudio session
 
+### New RStudio project
+
 * Start RStudio.
 * Under the File menu, click on New project, choose New directory, then New project.
-* Enter a name for this new folder, and choose a convenient location for it. This will be your working directory for the rest of the day (e.g., ~/RWorkshop)
+* Enter a name for this new folder, and choose a convenient location for it. This will be your working directory for the rest of the day (e.g., `~/RWorkshop`)
 * Click on “Create project”
-Under the Files tab on the right of the screen, click on New Folder and create a folder named data within your newly created working directory. (e.g., ~/RWorkshop/data)
-* Create a new R script (File > New File > R script) and save it in your working directory (e.g. intro-R.R)
+* Create a new R script (File > New File > R script) and save it in your working directory (e.g. introR.R)
+
+### RStudio environment
 
 Your RStudio environment is divided in several areas:
-Image 1: ![abspath](https://github.com/lguy/R-tutorial/blob/master/assets/rstudio_areas.png)
-Image 2:
-![relpath](assets/rstudio_areas.png)
-Image 3:
-![withraw](https://raw.githubusercontent.com/lguy/R-tutorial/master/assets/rstudio_areas.png)
+![rstudio_areas](assets/rstudio_areas.png)
 
+* *Script*: this is your source code, all the commands that allow you to produce the figures. Code should be mainly evaluated from here.
+* *Console*: this is where you can try commands before storing them in the script, show values, debug functions, etc.
+* *Environment*: this is where your files are stored in your file system.
+* *Output*: where figures or files produced by the script/console are shown.
 
+### Folders
+
+You separate the original data (raw data) from intermediate datasets that you may create for the need of a particular analysis. For instance, you may want to create a `data/` directory within your working directory that stores the raw data, and have a `data_output/` directory for intermediate datasets and a `figure_output/` directory for the plots you will generate.
+
+Create the following folders in the "Files" tab in the Output area:
+
+* `data/`
+* `data_output/`
+* `figure_output/`
+
+## Creating objects
+
+Creating objects
+Let’s start by creating a simple object:
+
+```
+x <- 10
+x
+```
+
+We assigned to `x` the number 10. `<-` is the assignment operator. Assigns values on the right to objects on the left. Mostly similar to `=` but not always. Learn to use `<-` as it is good programming practice. Using `=` in place of `<-` can lead to issues down the line.
+
+`=` should only be used to specify the values of arguments in functions for instance `read.csv(file="data/some_data.csv")`.
+
+We can now manipulate this value to do things with it. For instance:
+
+```
+x * 2
+x + 5
+x + x
+
+```
+or we can create new objects using `x`:
+```
+y <- x + x + 5
+```
+Let’s try something different:
+```
+x <- c(2, 4, 6)
+x
+```
+Two things:
+
+* we overwrote the content of `x`
+* `x` now contains 3 elements
+
+Using the `[], we can access individual elements of this object:
+
+```
+x[1]
+x[2]
+x[3]
+```
+
+### Challenge
+
+What is the content of this vector?
+
+```
+q <- c(x, x, 5)
+```
+
+We can also use these objects with functions, for instance to compute the mean and the standard deviation:
+
+```
+mean(x)
+sd(d)
+```
+
+This is useful to print the value of the mean or the standard deviation, but we can also save these values in their own variables:
+
+```
+mean_x <- mean(x)
+mean_x
+```
 
 ## Sources / Read further
 

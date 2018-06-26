@@ -37,6 +37,22 @@ You also can use a hefty tool to write and compile R codes. And RStudio is the m
 
 ## First RStudio session
 
+* Start RStudio.
+* Under the File menu, click on New project, choose New directory, then New project.
+* Enter a name for this new folder, and choose a convenient location for it. This will be your working directory for the rest of the day (e.g., ~/RWorkshop)
+* Click on “Create project”
+Under the Files tab on the right of the screen, click on New Folder and create a folder named data within your newly created working directory. (e.g., ~/RWorkshop/data)
+* Create a new R script (File > New File > R script) and save it in your working directory (e.g. intro-R.R)
+
+Your RStudio environment is divided in several areas:
+Image 1: ![abspath](https://github.com/lguy/R-tutorial/blob/master/assets/rstudio_areas.png)
+Image 2:
+![relpath](assets/rstudio_areas.png)
+Image 3:
+![withraw](https://raw.githubusercontent.com/lguy/R-tutorial/master/assets/rstudio_areas.png)
+
+
+
 ## Sources / Read further
 
 This tutorial is based on many great resources, but in particular:

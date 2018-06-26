@@ -147,7 +147,7 @@ The function `data()` allows you to load into memory datasets that are provided 
 data(Nile)
 ```
 
-Using ls() shows you that the function `data()` made the variable Nile available to you.
+Using `ls()` shows you that the function `data()` made the variable Nile available to you.
 
 Let’s make an histogram of the values of the flows:
 
@@ -363,6 +363,44 @@ fav_colors == "green" | fav_colors == "blue" | fav_colors == "yellow"
 fav_colors %in% c("green", "blue", "yellow")
 fav_colors[fav_colors %in% c("green", "blue", "yellow")]
 ```
+
+---
+
+## Importing files
+
+In this section, you’ll learn how to read plain-text rectangular files into R. Here, we’ll only scratch the surface of data import, but many of the principles will translate to other forms of data.
+
+The traditional way to import and manipulate data in R is through `read.table()`. However, in this tutorial, we're here making use of the package `readr`, one of the `tidyverse` collection. Instead of returning `data.frame` objects, `readr` returns `tibble` objects, which are also `data.frames` but few a few added twists. Read more on `tibble` objects in the [R for Data Science book](http://r4ds.had.co.nz/tibbles.html). 
+
+We will first install all packages of the collection, as we'll use more of these later. One only need to run this code once (i.e. it shouldn't figure in your scripts):
+
+```
+install.packages("tidyverse")
+```
+
+This command will download and install the required dependencies. It might take a few minutes to complete.
+
+Read more about [tidyverse here](https://www.tidyverse.org/).
+
+We now load the library:
+
+```
+library(tidyverse)
+```
+
+### Getting started
+
+Most of `readr`’s functions are concerned with turning flat files into data frames:
+
+* `read_csv()` reads comma delimited files 
+* `read_csv2()` reads semicolon separated files (common in countries where `,` is used as the decimal place)
+* `read_tsv()` reads tab delimited files
+* `read_delim()` reads in files with any delimiter.
+* `read_fwf()` reads fixed width files. You can specify fields either by their widths with `fwf_widths()` or their position with `fwf_positions()`. `read_table()` reads a common variation of fixed width files where columns are separated by white space.
+
+These functions all have similar syntax: once you’ve mastered one, you can use the others with ease. For the rest of this chapter we’ll focus on `read_tsv()`. Not only are csv files one of the most common forms of data storage, but once you understand `read_tsv()`, you can easily apply your knowledge to all the other functions in readr.
+
+The first argument to `read_tsv()` is the most important: it’s the path to the file to read.
 
 ---
 

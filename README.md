@@ -21,7 +21,7 @@ As an example, you'll load your own data into R and produce a beautiful figure w
 1. Loading your own data
 1. Your first figure
 
-## Installing prerequisites
+## Installing software
 
 To start programming with R on your computer, you need two things: R and RStudio (actually only R, but RStudio makes the experience more enjoyable).
 
@@ -35,9 +35,16 @@ To download R, go to [CRAN](https://cloud.r-project.org/) (the comprehensive R a
 
 You also can use a hefty tool to write and compile R codes. And RStudio is the most robust and popular IDE (integrated development environment) for R programming. [Download from RStudio](http://www.rstudio.com/download) (open source and for free).
 
-## First steps
+## First RStudio session
 
+## Sources / Read further
 
+This tutorial is based on many great resources, but in particular:
+
+* [R for data science](http://r4ds.had.co.nz/)
+* Cecilia Lee's [Introduction to R Programming](https://cecilialee.github.io/blog/2017/12/05/intro-to-r-programming.html)
+* François Michonneau's [R-class](http://r-bio.github.io/)
+* Selva Prabhakaran's  [Top 50 ggplot2 Visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html)
 
 #### Markdown
 

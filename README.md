@@ -402,6 +402,17 @@ These functions all have similar syntax: once you’ve mastered one, you can use
 
 The first argument to `read_tsv()` is the most important: it’s the path to the file to read.
 
+### First dataset: Legionella samples
+
+We're going to explore a dataset that shows information on water samples, taken from a Spanish hospital, possibly containing different phylotypes (isolates) of Legionella pneumophila. For each sample (observation) several variables have been recorded: the date, the sampling ID, the temperature, chlorine content and pH of the water.
+
+1. Download the [samples.tab file](assets/samples.tab). If your browser shows you the file instead of offering to download it, do File -> Save As and make sure you select "text" or "raw" somewhere.
+1. Save the file in your `data` subfolder in the folder you've created for this exercise.
+
+### In real life
+
+In this example, the data comes already very tidy, but this is rarely the case in real life. To tidy up the data, the best of course is to produce it the right way (see presentation), but whenever working with data produced by others, the `tidyr` package helps a great deal. See more information about tidying data in the corresponding [R for Data Science book](http://r4ds.had.co.nz/tidy-data.html).
+
 ---
 
 ## Sources / further reading

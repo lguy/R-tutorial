@@ -404,31 +404,156 @@ The first argument to `read_tsv()` is the most important: it’s the path to the
 
 ### First dataset: Legionella samples
 
-We're going to explore a dataset that shows information on water samples, taken from a Spanish hospital, possibly containing different phylotypes (isolates) of Legionella pneumophila. For each sample (observation) several variables have been recorded: the date, the sampling ID, the temperature, chlorine content and pH of the water.
+We're going to explore a dataset that shows information on water samples, taken from a Spanish hospital, possibly containing different pulsotypes (isolates) of Legionella pneumophila. For each sample (observation) several variables have been recorded: the date, the sampling ID, the temperature, chlorine content and pH of the water.
 
 1. Download the [samples.tab file](assets/samples.tab). If your browser shows you the file instead of offering to download it, do File -> Save As and make sure you select "text" or "raw" somewhere.
 1. Save the file in your `data` subfolder in the folder you've created for this exercise.
+1. Inspect the data: either open it with Excel or with a text editor (TextEdit or Notepad, for example). What do you see?
+1. Import the data in R:
+  ```R
+df <- read_tsv("data/samples.tab")
+  ```
+1. The object `df` should now appear in the Environment area in RStudio. Have a look at it.
+1. For sake of plotting something, let's use the basic `plot` figure from R:
+  ```R
+plot(df$Temperature, df$Chlorine)
+  ```
+
+Congratulations, this was your first graph in R. The plots that come with the `graphics` package in R are good, and are really great to explore your data, before starting on more complicated renderings. 
+
+A list and a gallery of the traditional graphs is available in a wikibook [R Programming/Graphics](https://en.wikibooks.org/wiki/R_Programming/Graphics). However, for more complex data and extended possibilities, we'll use the `ggplot2` package.
 
 ### In real life
 
-In this example, the data comes already very tidy, but this is rarely the case in real life. To tidy up the data, the best of course is to produce it the right way (see presentation), but whenever working with data produced by others, the `tidyr` package helps a great deal. See more information about tidying data in the corresponding [R for Data Science book](http://r4ds.had.co.nz/tidy-data.html).
+In this example, the data comes already very tidy, but this is rarely the case in real life. To tidy up the data, the best of course is to produce it the right way (see presentation), but whenever working with data produced by others, the `tidyr` package helps a great deal. See more information about tidying data in the corresponding [R for Data Science book](http://r4ds.had.co.nz/tidy-data.html). We'll see an extended example in a later section.
+
+---
+
+## Plotting with ggplot2
+
+### Data exploration
+
+The principle with ggplot2 is to first set the stage (with `ggplot()`), by stating (i) which dataset will be used (`data =`), and (ii) which variables will be used and how (`mapping = aes()`). 
+
+In our case, we first want to look at the distribution of chlorine:
+
+```
+ggplot(data = df, mapping = aes(x = Chlorine))
+```
+
+Notice that this actually sets the stage (axes, plot area) but doesn't plot any real data. Now we need to tell how we want the data to be represented. Let's select an histogram, with bin widths of 0.1. We just "add" that to the `ggplot call`:
+
+```
+ggplot(data = df, mapping = aes(x = Chlorine)) + 
+  geom_histogram(binwidth = 0.1)
+```
+
+You can ignore the warnings. There are `NA` (not available) values in our dataset, we know that.
+
+Now if we want to try several representation of the same dataset with the same aesthetics, we can save the ggplot call and keep adding to it:
+
+
+```
+gg_chlorine <- ggplot(data = df, mapping = aes(x = Chlorine)) 
+gg_chlorine + 
+  geom_histogram(binwidth = 0.1)
+gg_chlorine + 
+  geom_density()
+  
+```
+
+Let's now see if there is a correlation between temperature and chlorine:
+
+```
+ggplot(df, aes(Temperature, Chlorine)) + 
+  geom_point() +
+  geom_rug()
+```
+
+Here, we select `df` as the dataset, and want to plot chlorine as a function of temperature (`aes()`). We also want to plot a simple xy scatterplot (`geom_point()`) and add marginal densities (`geom_rug()`).
+
+But let's see if there is a different pattern for the different pulsotypes of Legionella that were found. We simply tell ggplot that we want different colors for different pulsotypes:
+
+```
+ggplot(df, aes(Temperature, Chlorine, color = Pulsotype)) + 
+  geom_point() +
+  geom_rug()
+```
+
+Now for another type of graphical representation: we want to see whether some pulsotypes have been repeatedly isolated from the same locations over time:
+
+```
+cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#FFFFFF")
+
+gg_location <- ggplot(df, aes(Date, Location)) +
+  geom_path(linetype = 3) +
+  geom_point(aes(fill = Pulsotype), size = 3, colour = "black", pch=21) +
+  scale_fill_manual(values=cbbPalette) +
+  scale_x_date(date_minor_breaks = "1 month",
+               limits=c(as.Date("2015-01-01"), NA))
+
+gg_location
+
+ggsave("figure_output/location_vs_time.pdf", gg_location)
+
+```
+
+Here, we:
+
+1. Plot the locations as a function of time (`Date`)
+1. Show lines between the locations (`geom_path`)
+1. Display points for these locations (`geom_point`). We color these by pulsotype (`aes(fill = Pulsotype)`), but we didn't want lines above to be split by pulsotype, only be locations (try it to see how that works).
+1. Use our own palette (which is color-blind friendly) (`scale_fill_manual`)
+1. Set the minor breaks on the x axis to be months and the limits for the plot to start on January 1st, 2015 (`scale_x_date()`).
+
+We finally save the plot in pdf format with `ggsave`.
+
+This code, which is about 10 lines long (including importing the data), produced a figure in a manuscript recently accepted.
 
 ### Second dataset
 
+
+
 ---
+## Getting help
+
+I know the name of the function I want to use, but I’m not sure how to use it
+If you need help with a specific function, let’s say `barplot()`, you can type:
+
+```
+?barplot
+```
+
+If you just need to remind yourself of the names of the arguments, you can use:
+
+``` 
+args(barplot)
+```
+
+To see what a function is able to do, use `example()`
+
+```
+example(barplot)
+```
+
+For more ways to get help, [read this page](http://r-bio.github.io/seeking-help/)
+
+
 
 ## Sources / further reading
 
 This tutorial is based on many great resources, but in particular:
 
-* [R for data science](http://r4ds.had.co.nz/)
+* Garrett Grolemund and Hadley Wickham's [R for data science](http://r4ds.had.co.nz/)
 * Cecilia Lee's [Introduction to R Programming](https://cecilialee.github.io/blog/2017/12/05/intro-to-r-programming.html)
 * François Michonneau's [R-class](http://r-bio.github.io/)
 
 In addition to these, there are many, many resources out there:
 
+* [RStudio's cheatsheets](https://www.rstudio.com/resources/cheatsheets/) on many of the topics covered here.
 * Selva Prabhakaran's  [Top 50 ggplot2 Visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html) to give you an overview of ggplot2's possibilities
 * Online courses on  [DataCamp](https://www.datacamp.com) on [R in general](https://www.datacamp.com/courses/free-introduction-to-r) and on [ggplot2](https://www.datacamp.com/courses/data-visualization-with-ggplot2-1).
+* A wikibook on [R Programming/Graphics](https://en.wikibooks.org/wiki/R_Programming/Graphics)
 
 #### Markdown
 

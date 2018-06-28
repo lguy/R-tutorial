@@ -413,6 +413,8 @@ We're going to explore a dataset that shows information on water samples, taken 
 
 In this example, the data comes already very tidy, but this is rarely the case in real life. To tidy up the data, the best of course is to produce it the right way (see presentation), but whenever working with data produced by others, the `tidyr` package helps a great deal. See more information about tidying data in the corresponding [R for Data Science book](http://r4ds.had.co.nz/tidy-data.html).
 
+### Second dataset
+
 ---
 
 ## Sources / further reading

@@ -74,7 +74,7 @@ Create the following folders in the "Files" tab in the Output area:
 Creating objects
 Let’s start by creating a simple object:
 
-```
+```R
 x <- 10
 x
 ```
@@ -85,7 +85,7 @@ We assigned to `x` the number 10. `<-` is the assignment operator. Assigns value
 
 We can now manipulate this value to do things with it. For instance:
 
-```
+```R
 x * 2
 x + 5
 x + x
@@ -93,13 +93,13 @@ x + x
 
 or we can create new objects using `x`:
 
-```
+```R
 y <- x + x + 5
 ```
 
 Let’s try something different:
 
-```
+```R
 x <- c(2, 4, 6)
 x
 ```
@@ -111,7 +111,7 @@ Two things:
 
 Using the `[]`, we can access individual elements of this object:
 
-```
+```R
 x[1]
 x[2]
 x[3]
@@ -121,20 +121,20 @@ x[3]
 
 What is the content of this vector?
 
-```
+```R
 q <- c(x, x, 5)
 ```
 
 We can also use these objects with functions, for instance to compute the mean and the standard deviation:
 
-```
+```R
 mean(x)
 sd(d)
 ```
 
 This is useful to print the value of the mean or the standard deviation, but we can also save these values in their own variables:
 
-```
+```R
 mean_x <- mean(x)
 mean_x
 ```
@@ -143,7 +143,7 @@ mean_x
 
 The function `data()` allows you to load into memory datasets that are provided as examples with R (or some packages). Let’s load the Nile dataset that provides the annual flow of the river Nile between 1871 and 1970.
 
-```
+```R
 data(Nile)
 ```
 
@@ -151,7 +151,7 @@ Using `ls()` shows you that the function `data()` made the variable Nile availab
 
 Let’s make an histogram of the values of the flows:
 
-```
+```R
 hist(Nile)
 ```
 
@@ -163,7 +163,7 @@ How would you add such a line to our histogram to show where the mean falls in t
 
 We can now save this plot in its own file:
 
-```
+```R
 pdf(file="figure_output/nile_flow.pdf")
 hist(Nile)
 abline(v=mean(Nile), col="red")
@@ -191,7 +191,7 @@ The other types of vectors are "complex" (for complex numbers) and "raw" a speci
 
 The easiest way is to create them directly as we have done before:
 
-```
+```R
 x <- c(5, 10, 15, 20, 25)
 class(x)
 ``
@@ -207,7 +207,7 @@ Similarly, we can create empty vectors of class `character` using `character(5)`
 
 ### Naming the elements of a vector
 
-```
+```R
 fav_colors <- c("red", "blue", "green", "yellow")
 names(fav_colors)
 names(fav_colors) <- c("John", "Lucy", "Greg", "Sarah")
@@ -220,20 +220,20 @@ unname(fav_colors)
 
 They can be accessed by their indices:
 
-```
+```R
 fav_colors[2]
 fav_colors[2:4]
 ```
 
 Repetitions are allowed:
 
-```
+```R
 fav_colors[c(2,3,2,4,1,2)]
 ```
 
 or if the vector is named, it can be accessed by the names of the elements:
 
-```
+```R
 fav_colors["John"]
 ```
 
@@ -244,14 +244,14 @@ fav_colors["John"]
 
 ### How to update/replace the value of a vector?
 
-``` 
+```R 
 x[4] <- 22
 fav_colors["Sarah"] <- "turquoise"
 ```
 
 ### How to add elements to a vector?
 
-```
+```R
 x <- c(5, 10, 15, 20)
 x <- c(x, 25) # adding at the end
 x <- c(0, x)  # adding at the beginning
@@ -260,7 +260,7 @@ x
 
 With named vectors:
 
-```
+```R
 fav_colors
 c(fav_colors, "purple")
 fav_colors <- c(fav_colors, "Tracy" = "purple")
@@ -275,7 +275,7 @@ Notes:
 
 If we add another element to our vector:
 
-```
+```R
 fav_color <- c(fav_colors, "black")
 ```
 
@@ -283,14 +283,14 @@ How to use the function `names()` to assign the name "Ana" to this last element?
 
 ### How to remove elements from a vector?
 
-```
+```R
 x[-5]
 x[-c(1, 3, 5)]
 ```
 
 but this: `fav_colors[-c("Tracy")]` does not work. We need to use the function match():
 
-```
+```R
 fav_colors[-match("Tracy", names(fav_colors))]
 ```
 
@@ -300,7 +300,7 @@ The function `match()` looks for the position of the first exact match within an
 
 `:` is a special function that creates numeric vectors of integer in increasing or decreasing order, test 1:10 and 10:1 for instance. The function `seq()` (for *seq*uence) can be used to create more complex patterns:
 
-```
+```R
 seq(1, 10, by=2)
 ## [1] 1 3 5 7 9
 seq(5, 10, length.out=3)
@@ -319,7 +319,7 @@ rep(1:3, 3)
 
 Operations on vectors
 
-```
+```R
 x <- c(5, 10, 15)
 x + 10
 x + c(10, 15, 20)
@@ -333,7 +333,7 @@ Note that operations on vectors are elementwise.
 
 R allows you to do operations on vectors of different lengths. The shorter vector will be "recycled" (~ repeated) to match the length of the longer one:
 
-```
+```R
 x <- c(5, 10, 15)
 x + c(2, 4, 6, 8, 10, 12)     # no warning when it's a multiple
 x + c(2, 4, 6, 8, 10, 12, 14) # warning
@@ -341,7 +341,7 @@ x + c(2, 4, 6, 8, 10, 12, 14) # warning
 
 Boolean operations and Filtering
 
-```
+```R
 u <- c(1, 4, 2, 5, 6, 3, 7)
 u < 3
 u[u < 3]
@@ -352,7 +352,7 @@ u[u > 5 & u < 8]
 
 With character strings:
 
-```
+```R
 fav_colors <- c("John" = "red", "Lucy" = "blue", "Greg" = "green",
                 "Sarah" = "yellow", "Tracy" = "purple")
 fav_colors == "blue"
@@ -374,7 +374,7 @@ The traditional way to import and manipulate data in R is through `read.table()`
 
 We will first install all packages of the collection, as we'll use more of these later. One only need to run this code once (i.e. it shouldn't figure in your scripts):
 
-```
+```R
 install.packages("tidyverse")
 ```
 
@@ -384,7 +384,7 @@ Read more about [tidyverse here](https://www.tidyverse.org/).
 
 We now load the library:
 
-```
+```R
 library(tidyverse)
 ```
 
@@ -406,18 +406,18 @@ The first argument to `read_tsv()` is the most important: it’s the path to the
 
 We're going to explore a dataset that shows information on water samples, taken from a Spanish hospital, possibly containing different pulsotypes (isolates) of Legionella pneumophila. For each sample (observation) several variables have been recorded: the date, the sampling ID, the temperature, chlorine content and pH of the water.
 
-1. Download the [samples.tab file](assets/samples.tab). If your browser shows you the file instead of offering to download it, do File -> Save As and make sure you select "text" or "raw" somewhere.
-1. Save the file in your `data` subfolder in the folder you've created for this exercise.
-1. Inspect the data: either open it with Excel or with a text editor (TextEdit or Notepad, for example). What do you see?
-1. Import the data in R:
-  ```R
+* Download the [samples.tab file](assets/samples.tab). If your browser shows you the file instead of offering to download it, do File -> Save As and make sure you select "text" or "raw" somewhere.
+* Save the file in your `data` subfolder in the folder you've created for this exercise.
+* Inspect the data: either open it with Excel or with a text editor (TextEdit or Notepad, for example). What do you see?
+* Import the data in R:
+```R
 df <- read_tsv("data/samples.tab")
-  ```
-1. The object `df` should now appear in the Environment area in RStudio. Have a look at it.
-1. For sake of plotting something, let's use the basic `plot` figure from R:
-  ```R
+```
+* The object `df` should now appear in the Environment area in RStudio. Have a look at it.
+* For sake of plotting something, let's use the basic `plot` figure from R:
+```R
 plot(df$Temperature, df$Chlorine)
-  ```
+```
 
 Congratulations, this was your first graph in R. The plots that come with the `graphics` package in R are good, and are really great to explore your data, before starting on more complicated renderings. 
 
@@ -437,13 +437,13 @@ The principle with ggplot2 is to first set the stage (with `ggplot()`), by stati
 
 In our case, we first want to look at the distribution of chlorine:
 
-```
+```R
 ggplot(data = df, mapping = aes(x = Chlorine))
 ```
 
 Notice that this actually sets the stage (axes, plot area) but doesn't plot any real data. Now we need to tell how we want the data to be represented. Let's select an histogram, with bin widths of 0.1. We just "add" that to the `ggplot call`:
 
-```
+```R
 ggplot(data = df, mapping = aes(x = Chlorine)) + 
   geom_histogram(binwidth = 0.1)
 ```
@@ -453,7 +453,7 @@ You can ignore the warnings. There are `NA` (not available) values in our datase
 Now if we want to try several representation of the same dataset with the same aesthetics, we can save the ggplot call and keep adding to it:
 
 
-```
+```R
 gg_chlorine <- ggplot(data = df, mapping = aes(x = Chlorine)) 
 gg_chlorine + 
   geom_histogram(binwidth = 0.1)
@@ -464,7 +464,7 @@ gg_chlorine +
 
 Let's now see if there is a correlation between temperature and chlorine:
 
-```
+```R
 ggplot(df, aes(Temperature, Chlorine)) + 
   geom_point() +
   geom_rug()
@@ -474,7 +474,7 @@ Here, we select `df` as the dataset, and want to plot chlorine as a function of 
 
 But let's see if there is a different pattern for the different pulsotypes of Legionella that were found. We simply tell ggplot that we want different colors for different pulsotypes:
 
-```
+```R
 ggplot(df, aes(Temperature, Chlorine, color = Pulsotype)) + 
   geom_point() +
   geom_rug()
@@ -482,7 +482,7 @@ ggplot(df, aes(Temperature, Chlorine, color = Pulsotype)) +
 
 Now for another type of graphical representation: we want to see whether some pulsotypes have been repeatedly isolated from the same locations over time:
 
-```
+```R
 cbbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#FFFFFF")
 
 gg_location <- ggplot(df, aes(Date, Location)) +
@@ -512,33 +512,43 @@ This code, which is about 10 lines long (including importing the data), produced
 
 ### Second dataset
 
+---
 
+## Your own figure
+
+Now use your own data. Think:
+
+* What should the figure say? What is the message?
+* Is my data well organized? (observations in rows, variables in columns, values in the cells)
+* Start small, and build upon what you already have
+* Limitations by the graphical packages are often there to discourage you to misrepresent data. Think twice.
 
 ---
+
 ## Getting help
 
 I know the name of the function I want to use, but I’m not sure how to use it
 If you need help with a specific function, let’s say `barplot()`, you can type:
 
-```
+```R
 ?barplot
 ```
 
 If you just need to remind yourself of the names of the arguments, you can use:
 
-``` 
+```R 
 args(barplot)
 ```
 
 To see what a function is able to do, use `example()`
 
-```
+```R
 example(barplot)
 ```
 
 For more ways to get help, [read this page](http://r-bio.github.io/seeking-help/)
 
-
+---
 
 ## Sources / further reading
 
@@ -554,20 +564,3 @@ In addition to these, there are many, many resources out there:
 * Selva Prabhakaran's  [Top 50 ggplot2 Visualizations](http://r-statistics.co/Top50-Ggplot2-Visualizations-MasterList-R-Code.html) to give you an overview of ggplot2's possibilities
 * Online courses on  [DataCamp](https://www.datacamp.com) on [R in general](https://www.datacamp.com/courses/free-introduction-to-r) and on [ggplot2](https://www.datacamp.com/courses/data-visualization-with-ggplot2-1).
 * A wikibook on [R Programming/Graphics](https://en.wikibooks.org/wiki/R_Programming/Graphics)
-
-#### Markdown
-
-- Bulleted
-- List
-
-Another list 
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-Commented area

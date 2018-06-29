@@ -71,7 +71,6 @@ Create the following folders in the "Files" tab in the Output area:
 
 ## Creating objects
 
-Creating objects
 Let’s start by creating a simple object:
 
 ```R
@@ -510,7 +509,33 @@ We finally save the plot in pdf format with `ggsave`.
 
 This code, which is about 10 lines long (including importing the data), produced a figure in a manuscript recently accepted.
 
-### Second dataset
+---
+
+## Tidying data and plotting: A more complex example
+
+In this example, we'll go from a (relatively) given raw output from an instrument and show ways to use for different purposes. An important point here is that the time invested in preparing the data (writing the initial code to tidy up and prepare visualizations is well invested: once you reuse the instrument you can reuse your code and reproducibly and quickly go from raw data to ask questions about your data.
+
+### Import the datasets
+
+It is recommended to start another project, with its own folder structure as before.
+
+Here, we use (slightly modified) output from the Tecan Spark to explore the results of one experiment. The experiment was to grow three strains of Legionella: a Legionella pneumophila Paris wild type (WT), and two isogenic mutants of this one, one with a SYPFP2 gene and one with a dTomato gene. The bacteria were grown in AYE medium for 42 hours, in three different conditions: in one, IPTG was added in the overnight preculture (withIPTG), in a second the IPTG was added only at the beginning of the experiment (NI for non-induced) and the third one did not receive IPTG. There were several replicates for each of the combinations of strain and treatment. 
+
+The data is spread in three files, that you should download and save in the `data` folder:
+
+* [OD600.txt](assets/OD600.txt): optical density at 600 nm
+* [syfp2.txt](assets/syfp2.txt): fluorescence that corresponds to SYFP2
+* [dtom.txt](assets/dtom.txt): fluorescence that corresponds to dTomato
+
+Take a moment to see how this data is organized.
+
+In that case, each row corresponds to a well. There are two columns which give the well and a label that represents both the strain and the treatment. Each following column are absorbance/fluorescence values at different time points. 
+
+### Tidying the datasets
+
+This data is not tidy:
+- There are multiple observations per row, as each different measure is a separate observation. 
+- The label for the well gives two different variables, the treatment and 
 
 ---
 

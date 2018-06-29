@@ -57,6 +57,8 @@ Your RStudio environment is divided in several areas:
 * *Environment*: this is where your files are stored in your file system.
 * *Output*: where figures or files produced by the script/console are shown.
 
+In general, *do not copy/paste* from the source code to the console. Use Cmd/Ctrl + Enter to *evaluate* one line or the selection.
+
 ### Folders
 
 You separate the original data (raw data) from intermediate datasets that you may create for the need of a particular analysis. For instance, you may want to create a `data/` directory within your working directory that stores the raw data, and have a `data_output/` directory for intermediate datasets and a `figure_output/` directory for the plots you will generate.
@@ -519,23 +521,168 @@ In this example, we'll go from a (relatively) given raw output from an instrumen
 
 It is recommended to start another project, with its own folder structure as before.
 
-Here, we use (slightly modified) output from the Tecan Spark to explore the results of one experiment. The experiment was to grow three strains of Legionella: a Legionella pneumophila Paris wild type (WT), and two isogenic mutants of this one, one with a SYPFP2 gene and one with a dTomato gene. The bacteria were grown in AYE medium for 42 hours, in three different conditions: in one, IPTG was added in the overnight preculture (withIPTG), in a second the IPTG was added only at the beginning of the experiment (NI for non-induced) and the third one did not receive IPTG. There were several replicates for each of the combinations of strain and treatment. 
+Here, we use (slightly modified) output from the Tecan Spark to explore the results of one experiment. The experiment was to grow three strains of Legionella: a Legionella pneumophila Paris wild type (WT), and two isogenic mutants of this one, one with a SYFP2 gene and one with a dTomato gene. The bacteria were grown in AYE medium for 42 hours, in three different conditions: in one, IPTG was added in the overnight preculture (withIPTG), in a second the IPTG was added only at the beginning of the experiment (NI for non-induced) and the third one did not receive IPTG. There were several replicates for each of the combinations of strain and treatment. 
 
 The data is spread in three files, that you should download and save in the `data` folder:
 
-* [OD600.txt](assets/OD600.txt): optical density at 600 nm
-* [syfp2.txt](assets/syfp2.txt): fluorescence that corresponds to SYFP2
-* [dtom.txt](assets/dtom.txt): fluorescence that corresponds to dTomato
+* [`OD600.txt`](assets/OD600.txt): optical density at 600 nm
+* [`syfp2.txt`](assets/syfp2.txt): fluorescence that corresponds to SYFP2
+* [`dtom.txt`](assets/dtom.txt): fluorescence that corresponds to dTomato
 
 Take a moment to see how this data is organized.
 
 In that case, each row corresponds to a well. There are two columns which give the well and a label that represents both the strain and the treatment. Each following column are absorbance/fluorescence values at different time points. 
 
-### Tidying the datasets
+### Tidy the datasets
 
 This data is not tidy:
-- There are multiple observations per row, as each different measure is a separate observation. 
-- The label for the well gives two different variables, the treatment and 
+1. There are multiple observations per row, as each different measure is a separate observation. We want to have one row per time point and per replicate.
+1. The label for the well gives two different variables, the treatment and the strain. We want to split this column into two.
+1. The data is spread over three files. 
+1. Before using the fluorescence or the absorbance values, we need to subtract the blank values. 
+
+There are many ways to perform that last action, but none "off the shelf" that is really satisfying, since there is no easy way to associate one treatment with the right blank. We thus devise an ad-hoc function:
+
+```R
+substract_blank <- function(tb){
+  blank_min <- tb %>% filter(type == "Blank-")
+  blank_min_mean <- apply(blank_min[,3:ncol(tb)], 2, mean)
+  blank_plus <- tb %>% filter(type == "Blank+")
+  blank_plus_mean <- apply(blank_plus[,3:ncol(tb)], 2, mean)
+  for (i in 1:nrow(tb)){
+    if (tb$type[i] %in% c("dTom NI", "dTom+", "SYFP2 NI", "SYFP2+",
+                          "WT NI", "WT+")){
+      tb[i,3:ncol(tb)] <- tb[i,3:ncol(tb)] - blank_plus_mean
+    } else if (tb$type[i] %in% c("dTom-", "SYFP2-", "WT-")){
+      tb[i,3:ncol(tb)] <- tb[i,3:ncol(tb)] - blank_min_mean
+    }
+  }
+  tb %>% filter(!(type %in% c("Blank-", "Blank+")))
+}
+```
+
+Briefly, this function first finds the rows corresponding to the two blanks, averages the values at each time point for each blank replicate, and then uses an `if/else` control to substract the right blank from the right treatment. The blank values are removed from the resulting tibble. 
+
+You will need to copy-paste or evaluate that function in order to perform the next step.
+
+Let's start with the OD600. We first open the file (a simple call to `read_tsv`, since our data is in a tab-separated file). Then we substract the blank values using the function above. Finally, we tidy the data, "piping" (`%>%`) the resulting tibble through several functions:
+
+1. The columns `0` to `42` (containing the values at each time point) are `gather`ed: it means for each variable we produce a new row with all other variables (in that case the well and the well label), and a new variable which is the time.
+1. Some columns are cleaned:
+  1. The time is converted to numeric values (it was stored as text before)
+  1. The signs `+` and `-` (like in WT+ or SYFP2-, indicating the presence or not of IPTG) are replaced by a space and either withIPTG or noIPTG. 
+1. The label which contains both the strain and the treatment is `separate`d to two new variables. 
+
+```R
+od600 <- 
+  read_tsv("~/data/OD600.txt")
+od600_deblanked <- substract_blank(od600)
+od600_tidy <- od600_deblanked %>% 
+  gather(`0`:`42`, key='time', value='od600') %>%
+  mutate(time = as.numeric(time)) %>%
+  mutate(type = stringr::str_replace(type, "\\+", " withIPTG")) %>%
+  mutate(type = stringr::str_replace(type, '-', ' noIPTG')) %>%
+  separate(type, c("strain", "IPTG"), sep = " ")
+```
+
+We obtain a new `od600_tidy` object. We repeat the procedure for the other two datasets containing the fluorescence values at the wavelengths corresponding to the emission of SYFTP2 and dTomato:
+
+```R
+# SYFP2
+syfp2 <- read_tsv("data/syfp2.txt")
+syfp2_deblanked <- substract_blank(syfp2)
+syfp2_tidy <- syfp2_deblanked %>% 
+  gather(`0`:`42`, key='time', value='syfp2_fluo') %>%
+  mutate(time = as.numeric(time)) %>%
+  mutate(type = stringr::str_replace(type, "\\+", " withIPTG")) %>%
+  mutate(type = stringr::str_replace(type, '-', ' noIPTG')) %>%
+  separate(type, c("strain", "IPTG"), sep = " ")
+
+# dTom
+dtom <- read_tsv("data/dtom.txt")
+dtom_deblanked <- substract_blank(dtom)
+dtom_tidy <- dtom_deblanked %>% 
+  gather(`0`:`42`, key='time', value='dtom_fluo') %>%
+  mutate(time = as.numeric(time)) %>%
+  mutate(type = stringr::str_replace(type, "\\+", " withIPTG")) %>%
+  mutate(type = stringr::str_replace(type, '-', ' noIPTG')) %>%
+  separate(type, c("strain", "IPTG"), sep = " ")
+```
+
+Now left-join all three datasets in one single aye tibble (AYE is the medium used to grow the bacteria). This operation is possible for tibbles which have the same number of rows, with at least one common variable. The rest is added as new columns. We use two "nested" `left_join` commands to join all three datasets in one go: 
+
+```R
+aye <- left_join(left_join(od600_tidy, syfp2_tidy), dtom_tidy)
+
+```
+
+We're good! Now let's explore the data:
+
+### Exploratory plots
+
+These are just a few examples to demonstrate how to answer simple questions about the data.
+
+Since we're 
+
+```R 
+# Prepare "backbone", setting aesthetics (time vs. od600, grouping by 
+# strain and shape)
+gg_od600 <- ggplot(aye, aes(time, od600, color = strain, shape = IPTG, 
+                                   linetype=IPTG))
+```
+
+
+
+#### How to plot 
+
+```R 
+# Prepare "backbone", setting aesthetics (time vs. od600, grouping by 
+# strain and shape)
+gg_od600 <- ggplot(aye, aes(time, od600, color = strain, shape = IPTG, 
+                                   linetype=IPTG))
+```
+
+
+```R
+# Plot each well for itself, no average
+gg_od600 + geom_line(aes(group = well))
+```
+
+
+
+```R
+# Averaging per strain and treatment, adding error bars
+gg_od600 + 
+  stat_summary(fun.data = mean_sd, geom = "errorbar") +
+  stat_summary(fun.data = mean_sd, position = position_dodge(width = 0.5))
+# OK, it grows OK-ish
+```
+
+```R
+# Cross-excitation?
+ggplot(aye, aes(syfp2_fluo, dtom_fluo, color = strain)) + 
+  geom_point(size = 0.1)
+# A bit: dTomato leaks and shines when excited with SYFP2 settings
+# Dynamic range is higher for syfp2 than dtomato
+```
+
+
+```R
+# Leaking?
+ggplot(aye %>% filter(IPTG == "noIPTG"), aes(syfp2_fluo, dtom_fluo, color = strain)) + 
+  geom_point(size = 0.1)
+# A tad, much more for SYFP2 than from dTomato
+# Why negative values??
+```
+
+
+```R
+# Correlation with OD?
+gg_fluo <- ggplot(aye, aes(od600, syfp2_fluo, color = strain))
+gg_fluo +
+  geom_line(aes(group = well, linetype=IPTG))
+```
+
 
 ---
 

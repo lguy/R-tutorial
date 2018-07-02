@@ -622,49 +622,81 @@ We're good! Now let's explore the data:
 
 These are just a few examples to demonstrate how to answer simple questions about the data.
 
-Since we're 
+Since we're going to have several questions about OD600 along time, we first save a generic `ggplot` object, grouping data by strain (color) and treatment (shapes and/or linetypes). 
 
 ```R 
-# Prepare "backbone", setting aesthetics (time vs. od600, grouping by 
-# strain and shape)
 gg_od600 <- ggplot(aye, aes(time, od600, color = strain, shape = IPTG, 
                                    linetype=IPTG))
 ```
 
+#### How to plot OD 600 vs. time
 
-
-#### How to plot 
-
-```R 
-# Prepare "backbone", setting aesthetics (time vs. od600, grouping by 
-# strain and shape)
-gg_od600 <- ggplot(aye, aes(time, od600, color = strain, shape = IPTG, 
-                                   linetype=IPTG))
-```
-
+We add lines to the plot, grouping by well to follow the growth in each well separately.
 
 ```R
-# Plot each well for itself, no average
 gg_od600 + geom_line(aes(group = well))
 ```
 
+#### How to average per strain and treatment?
 
+And adding error bars. We want to summarize each group (treatment x strain) by showing the average and also show error bars at each point. We use the function `stat_summary` twice, once for the average lines, and once for the error bars. However, the inbuilt summary functions (argument `fun.data` are limited, and do not do exactly what we want. The closest one is `mean_se` but it displays the standard error of the mean whereas we want standard deviation. We display the function just by typing its name with no parenthesis,  (`mean_sd`). 
 
 ```R
-# Averaging per strain and treatment, adding error bars
+mean_se
+# function (x, mult = 1) 
+# {
+#    x <- stats::na.omit(x)
+#    se <- mult * sqrt(stats::var(x)/length(x))
+#    mean <- mean(x)
+#    data.frame(y = mean, ymin = mean - se, ymax = mean + se)
+}
+```
+
+Based on this, we can design an object that takes similar input and returns a similar object:
+
+```R
+mean_sd <- function (x) {
+  x <- stats::na.omit(x)
+  sd <- stats::sd(x)
+  mean <- mean(x)
+  data.frame(y = mean, ymin = mean - sd, ymax = mean + sd)
+}
+```
+
+We can now write our graphical command, recalling the `ggplot` object and add the two `stat_summary` calls. To the section, which displays
+
+```R
 gg_od600 + 
   stat_summary(fun.data = mean_sd, geom = "errorbar") +
   stat_summary(fun.data = mean_sd, position = position_dodge(width = 0.5))
 # OK, it grows OK-ish
 ```
 
+#### How to spread the information on several panels
+
+That was quite a lot of curves on the same plot. Let's use `facet_wrap` to separate them. We could separate by treatment or by strain, but let's do both:
+
 ```R
-# Cross-excitation?
+gg_od600 + 
+  stat_summary(fun.data = mean_sd, position = position_dodge(width = 0.2)) +
+  stat_summary(fun.data = mean_sd, geom = "errorbar") +
+  facet_wrap(~strain+IPTG)
+```
+
+#### How to plot cross-excitation?
+
+We want to see if the dTomato strain reacts to SYFP2 excitation and vice-versa. We need to change the basic aesthetics. We do a simple dot-plot.
+
+```R
 ggplot(aye, aes(syfp2_fluo, dtom_fluo, color = strain)) + 
   geom_point(size = 0.1)
 # A bit: dTomato leaks and shines when excited with SYFP2 settings
 # Dynamic range is higher for syfp2 than dtomato
 ```
+
+#### Is there any leaking from the lac promoter?
+
+We want to see if there is any fluorescence whenever we don't add IPTG. We filter out the data by using a `%>%` from the dataset to a `filter` function, and we select only the rows where the variable "IPTG" has "noIPTG" as value. A simple dot-plot then. 
 
 
 ```R
@@ -675,14 +707,19 @@ ggplot(aye %>% filter(IPTG == "noIPTG"), aes(syfp2_fluo, dtom_fluo, color = stra
 # Why negative values??
 ```
 
+#### Is fluorescence correlated with OD?
+
+This time we want syfp2 fluorescence as a function of OD600. We want lines this time:
 
 ```R
 # Correlation with OD?
 gg_fluo <- ggplot(aye, aes(od600, syfp2_fluo, color = strain))
 gg_fluo +
   geom_line(aes(group = well, linetype=IPTG))
+# Not linear everywhere but we have a reference curve
 ```
 
+And so on and so forth. Ask your own questions about the dataset if you want and try to answer then using R.
 
 ---
 

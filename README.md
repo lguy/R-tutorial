@@ -195,11 +195,11 @@ The easiest way is to create them directly as we have done before:
 ```R
 x <- c(5, 10, 15, 20, 25)
 class(x)
-``
+```
 
 However, there will be cases when we want to create empty vectors that will be later populated with values.
 
-``
+```R
 x <- numeric(5)
 x
 ```

@@ -130,7 +130,7 @@ We can also use these objects with functions, for instance to compute the mean a
 
 ```R
 mean(x)
-sd(d)
+sd(x)
 ```
 
 This is useful to print the value of the mean or the standard deviation, but we can also save these values in their own variables:
@@ -171,7 +171,7 @@ abline(v=mean(Nile), col="red")
 dev.off()
 ```
 
-Note that we saved the figure `nile_flow.pdf` in the `figure_output` folder. We 
+Note that we saved the figure `nile_flow.pdf` in the `figure_output` folder. 
 
 ---
 
@@ -312,7 +312,11 @@ seq(1, 8, by=3) # sequence stops to stay below upper limit
 ## [1] 1 4 7
 seq(1.1, 2, length.out=10)
 ##  [1] 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 2.0
-Repeating
+```
+
+Repeating:
+
+```R 
 x <- rep(8, 4)
 x
 rep(1:3, 3)
@@ -428,7 +432,7 @@ A list and a gallery of the traditional graphs is available in a wikibook [R Pro
 
 In this example, the data comes already very tidy, but this is rarely the case in real life. To tidy up the data, the best of course is to produce it the right way (see presentation), but whenever working with data produced by others, the `tidyr` package helps a great deal. See more information about tidying data in the corresponding [R for Data Science book](http://r4ds.had.co.nz/tidy-data.html). We'll see an extended example in a later section.
 
----
+-------
 
 ## Plotting with ggplot2
 
@@ -521,6 +525,12 @@ In this example, we'll go from a (relatively) given raw output from an instrumen
 
 It is recommended to start another project, with its own folder structure as before.
 
+You'll need to reload the `tidyverse` library:
+
+```R
+library(tidyverse)
+```
+
 Here, we use (slightly modified) output from the Tecan Spark to explore the results of one experiment. The experiment was to grow three strains of Legionella: a Legionella pneumophila Paris wild type (WT), and two isogenic mutants of this one, one with a SYFP2 gene and one with a dTomato gene. The bacteria were grown in AYE medium for 42 hours, in three different conditions: in one, IPTG was added in the overnight preculture (withIPTG), in a second the IPTG was added only at the beginning of the experiment (NI for non-induced) and the third one did not receive IPTG. There were several replicates for each of the combinations of strain and treatment. 
 
 The data is spread in three files, that you should download and save in the `data` folder:
@@ -575,7 +585,7 @@ Let's start with the OD600. We first open the file (a simple call to `read_tsv`,
 
 ```R
 od600 <- 
-  read_tsv("~/data/OD600.txt")
+  read_tsv("data/OD600.txt")
 od600_deblanked <- substract_blank(od600)
 od600_tidy <- od600_deblanked %>% 
   gather(`0`:`42`, key='time', value='od600') %>%
